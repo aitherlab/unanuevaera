@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Nueva Era Calendar Converter</title>
+  <title>Fecha Nueva Era</title>
   <style>
     :root { --border:#e6e6e6; --muted:#666; }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#fff; color:#111; }
@@ -19,7 +19,7 @@
     .hero img { width: 100%; height: 220px; object-fit: cover; display:block; }
     .hero .cap { padding: 10px 12px; color: var(--muted); font-size: 13px; }
 
-    h1 { font-size: 20px; margin: 10px 0 4px; }
+    h1 { font-size: 22px; margin: 10px 0 4px; }
     p { margin: 0 0 14px; color: var(--muted); }
 
     .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
@@ -85,41 +85,46 @@
 <body>
   <div class="wrap">
 
-    <!-- TOP IMAGE PLACEHOLDER -->
+    <!-- IMAGEN SUPERIOR -->
     <div class="hero">
-      <!-- Replace src with your real image path later -->
-      <img src="https://via.placeholder.com/1200x420?text=Placeholder+Image" alt="Placeholder" />
-      <div class="cap">Placeholder image (replace with the table photo or your own header image).</div>
+      <!-- Pon tu imagen en el mismo folder y nómbrala header.jpg (o cambia este nombre aquí) -->
+      <img src="header.jpg" alt="Tabla de la Nueva Era" />
+      <div class="cap">Calendario de la Nueva Era</div>
     </div>
 
-    <h1>Nueva Era Converter</h1>
-    <p>Select a Gregorian date. The app shows the corresponding <span class="pill">N.E. year / month / day</span>.</p>
+    <h1>Fecha Nueva Era</h1>
+    <p>
+      Seleccione una fecha del <b>calendario gregoriano</b>.
+      El sistema mostrará la <span class="pill">fecha correspondiente en la Nueva Era</span>.
+    </p>
 
     <div class="grid">
-      <!-- LEFT: INPUT + RESULT -->
+      <!-- IZQUIERDA: ENTRADA + RESULTADO -->
       <div class="card">
-        <label for="gregDate">Gregorian date</label>
+        <label for="gregDate">Fecha gregoriana</label>
         <input id="gregDate" type="date" />
 
         <div class="result" id="resultBox">
           <div class="big" id="neOutput">N.E. —</div>
-          <div class="small" id="neExplain">Pick a date to convert.</div>
+          <div class="small" id="neExplain">Seleccione una fecha para convertir.</div>
         </div>
 
         <div class="footer">
-          Assumption from the table: N.E. months start on the 20th; N.E. year starts on Sept 20, 1912.
+          La Nueva Era inicia el 20 de septiembre de 1912.
+          Los meses comienzan el día 20.
         </div>
       </div>
 
-      <!-- RIGHT: CALENDAR -->
+      <!-- DERECHA: CALENDARIO -->
       <div class="card">
         <div class="cal-head">
-          <h2 id="calTitle">Calendar</h2>
-          <div class="legend">Selected day highlighted</div>
+          <h2 id="calTitle">Calendario</h2>
+          <div class="legend">Día seleccionado resaltado</div>
         </div>
 
         <div class="dow">
-          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div>
+          <div>Jue</div><div>Vie</div><div>Sáb</div>
         </div>
 
         <div class="cal-grid" id="calGrid"></div>
@@ -128,16 +133,16 @@
   </div>
 
   <script>
-    // ===== Nueva Era conversion logic (same rule-set as the table) =====
-    // N.E. epoch: N.E. 1/1/1 = 1912-09-20
-    // N.E. month 1..12 maps to: 1=Sept,2=Oct,3=Nov,4=Dec,5=Jan,...,12=Aug
+    // ===== Lógica de conversión Nueva Era (regla de la tabla) =====
+    // Época N.E.: N.E. 1/1/1 = 1912-09-20
+    // Mes N.E. 1..12: 1=Sep,2=Oct,3=Nov,4=Dic,5=Ene,...,12=Ago
     function neMonthToGregMonth(neMonth) {
-      if (neMonth < 1 || neMonth > 12) throw new Error("N.E. month must be 1..12");
-      return (neMonth <= 4) ? (neMonth + 8) : (neMonth - 4); // 1->9 ... 4->12, 5->1 ... 12->8
+      if (neMonth < 1 || neMonth > 12) throw new Error("El mes N.E. debe estar entre 1 y 12");
+      return (neMonth <= 4) ? (neMonth + 8) : (neMonth - 4);
     }
     function gregMonthToNeMonth(gMonth) {
-      if (gMonth < 1 || gMonth > 12) throw new Error("Gregorian month must be 1..12");
-      return (gMonth >= 9) ? (gMonth - 8) : (gMonth + 4); // 9->1 ... 12->4, 1->5 ... 8->12
+      if (gMonth < 1 || gMonth > 12) throw new Error("El mes gregoriano debe estar entre 1 y 12");
+      return (gMonth >= 9) ? (gMonth - 8) : (gMonth + 4);
     }
 
     function toDateUTC(y, m, d) { // m: 1-12
@@ -155,11 +160,11 @@
       return new Date(ms);
     }
 
-    // Gregorian -> N.E.
-    function gregorianToNE(gDate /* Date in UTC */) {
+    // Gregoriano -> N.E.
+    function gregorianToNE(gDate /* Date en UTC */) {
       const { y, m, d } = ymdUTC(gDate);
 
-      // Determine the Gregorian month-start at day 20 that contains this date
+      // Determinar el inicio de mes (día 20) que contiene esta fecha
       let monthStart;
       if (d >= 20) {
         monthStart = toDateUTC(y, m, 20);
@@ -174,9 +179,9 @@
       const ms = ymdUTC(monthStart);
       const neMonth = gregMonthToNeMonth(ms.m);
 
-      // N.E. year boundary is Sept 20
+      // El año N.E. cambia el 20 de septiembre
       let neYear;
-      if (ms.m > 9 || (ms.m === 9 && ms.d >= 20)) { // monthStart on/after Sep 20
+      if (ms.m > 9 || (ms.m === 9 && ms.d >= 20)) {
         neYear = ms.y - 1911;
       } else {
         neYear = (ms.y - 1) - 1911;
@@ -185,7 +190,7 @@
       return { neYear, neMonth, neDay, monthStart };
     }
 
-    // ===== Simple calendar UI =====
+    // ===== UI de calendario simple =====
     const gregInput = document.getElementById("gregDate");
     const calGrid = document.getElementById("calGrid");
     const calTitle = document.getElementById("calTitle");
@@ -194,7 +199,8 @@
 
     function formatMonthTitle(y, m) {
       const dt = toDateUTC(y, m, 1);
-      return dt.toLocaleString(undefined, { month: "long", year: "numeric", timeZone: "UTC" });
+      // Fuerza español en el título del mes
+      return dt.toLocaleString("es", { month: "long", year: "numeric", timeZone: "UTC" });
     }
 
     function renderCalendar(selectedDateUTC) {
@@ -202,21 +208,17 @@
 
       calTitle.textContent = formatMonthTitle(y, m);
 
-      // First day of month
       const first = toDateUTC(y, m, 1);
-      const firstDow = first.getUTCDay(); // 0=Sun
+      const firstDow = first.getUTCDay(); // 0=Dom
 
-      // Days in month
       const nextMonth = (m === 12) ? toDateUTC(y + 1, 1, 1) : toDateUTC(y, m + 1, 1);
       const daysInMonth = Math.round((nextMonth - first) / 86400000);
 
-      // Previous month days to show
       const prevMonthLast = addDaysUTC(first, -1);
       const prevDaysInMonth = ymdUTC(prevMonthLast).d;
 
       calGrid.innerHTML = "";
 
-      // 6 rows * 7 days = 42 cells
       for (let i = 0; i < 42; i++) {
         const cell = document.createElement("div");
         cell.className = "cell";
@@ -225,7 +227,6 @@
 
         let cellDate;
         if (dayNum < 1) {
-          // prev month
           const day = prevDaysInMonth + dayNum;
           const pm = (m === 1) ? 12 : (m - 1);
           const py = (m === 1) ? (y - 1) : y;
@@ -233,7 +234,6 @@
           cell.classList.add("muted");
           cellDate = toDateUTC(py, pm, day);
         } else if (dayNum > daysInMonth) {
-          // next month
           const day = dayNum - daysInMonth;
           const nm = (m === 12) ? 1 : (m + 1);
           const ny = (m === 12) ? (y + 1) : y;
@@ -241,13 +241,11 @@
           cell.classList.add("muted");
           cellDate = toDateUTC(ny, nm, day);
         } else {
-          // current month
           cell.textContent = dayNum;
           cellDate = toDateUTC(y, m, dayNum);
           if (dayNum === d) cell.classList.add("selected");
         }
 
-        // Click a day to set date
         cell.addEventListener("click", () => {
           const { y, m, d } = ymdUTC(cellDate);
           gregInput.value = `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
@@ -264,19 +262,16 @@
       const [yy, mm, dd] = gregInput.value.split("-").map(Number);
       const g = toDateUTC(yy, mm, dd);
 
-      // Convert
       const { neYear, neMonth, neDay, monthStart } = gregorianToNE(g);
       neOutput.textContent = `N.E. ${neYear}/${neMonth}/${neDay}`;
 
       const ms = ymdUTC(monthStart);
       neExplain.textContent =
-        `N.E. month started on ${ms.y}-${String(ms.m).padStart(2,"0")}-${String(ms.d).padStart(2,"0")} (Gregorian).`;
+        `El mes N.E. comenzó el ${ms.y}-${String(ms.m).padStart(2,"0")}-${String(ms.d).padStart(2,"0")} (gregoriano).`;
 
-      // Calendar month follows selected Gregorian date
       renderCalendar(g);
     }
 
-    // Initialize with today
     (function init() {
       const now = new Date();
       const todayUTC = toDateUTC(now.getFullYear(), now.getMonth() + 1, now.getDate());
