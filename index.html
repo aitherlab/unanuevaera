@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nueva Era Calendar Converter</title>
+  <style>
+    :root { --border:#e6e6e6; --muted:#666; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#fff; color:#111; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 18px; }
+
+    .hero {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: #fafafa;
+    }
+    .hero img { width: 100%; height: 220px; object-fit: cover; display:block; }
+    .hero .cap { padding: 10px 12px; color: var(--muted); font-size: 13px; }
+
+    h1 { font-size: 20px; margin: 10px 0 4px; }
+    p { margin: 0 0 14px; color: var(--muted); }
+
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 860px) { .grid { grid-template-columns: 360px 1fr; } }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff;
+    }
+    label { display:block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    input[type="date"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .result {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #f7f7f7;
+      border: 1px solid var(--border);
+    }
+    .result .big { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .result .small { color: var(--muted); font-size: 13px; }
+
+    .cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
+    .cal-head h2 { font-size: 16px; margin:0; }
+    .legend { color: var(--muted); font-size: 12px; }
+
+    .dow { display:grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 6px; }
+    .dow div { text-align:center; font-size:12px; color: var(--muted); padding: 4px 0; }
+
+    .cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .cell {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      height: 44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 14px;
+      background:#fff;
+      user-select:none;
+    }
+    .cell.muted { color: #aaa; background:#fcfcfc; }
+    .cell.selected {
+      outline: 2px solid #111;
+      outline-offset: -2px;
+      font-weight: 700;
+      background:#f1f1f1;
+    }
+
+    .footer { margin-top: 12px; color: var(--muted); font-size: 12px; }
+    .pill { display:inline-block; padding: 2px 8px; border:1px solid var(--border); border-radius: 999px; background:#fff; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- TOP IMAGE PLACEHOLDER -->
+    <div class="hero">
+      <!-- Replace src with your real image path later -->
+      <img src="https://via.placeholder.com/1200x420?text=Placeholder+Image" alt="Placeholder" />
+      <div class="cap">Placeholder image (replace with the table photo or your own header image).</div>
+    </div>
+
+    <h1>Nueva Era Converter</h1>
+    <p>Select a Gregorian date. The app shows the corresponding <span class="pill">N.E. year / month / day</span>.</p>
+
+    <div class="grid">
+      <!-- LEFT: INPUT + RESULT -->
+      <div class="card">
+        <label for="gregDate">Gregorian date</label>
+        <input id="gregDate" type="date" />
+
+        <div class="result" id="resultBox">
+          <div class="big" id="neOutput">N.E. —</div>
+          <div class="small" id="neExplain">Pick a date to convert.</div>
+        </div>
+
+        <div class="footer">
+          Assumption from the table: N.E. months start on the 20th; N.E. year starts on Sept 20, 1912.
+        </div>
+      </div>
+
+      <!-- RIGHT: CALENDAR -->
+      <div class="card">
+        <div class="cal-head">
+          <h2 id="calTitle">Calendar</h2>
+          <div class="legend">Selected day highlighted</div>
+        </div>
+
+        <div class="dow">
+          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Nueva Era conversion logic (same rule-set as the table) =====
+    // N.E. epoch: N.E. 1/1/1 = 1912-09-20
+    // N.E. month 1..12 maps to: 1=Sept,2=Oct,3=Nov,4=Dec,5=Jan,...,12=Aug
+    function neMonthToGregMonth(neMonth) {
+      if (neMonth < 1 || neMonth > 12) throw new Error("N.E. month must be 1..12");
+      return (neMonth <= 4) ? (neMonth + 8) : (neMonth - 4); // 1->9 ... 4->12, 5->1 ... 12->8
+    }
+    function gregMonthToNeMonth(gMonth) {
+      if (gMonth < 1 || gMonth > 12) throw new Error("Gregorian month must be 1..12");
+      return (gMonth >= 9) ? (gMonth - 8) : (gMonth + 4); // 9->1 ... 12->4, 1->5 ... 8->12
+    }
+
+    function toDateUTC(y, m, d) { // m: 1-12
+      return new Date(Date.UTC(y, m - 1, d));
+    }
+    function ymdUTC(dateObj) {
+      return {
+        y: dateObj.getUTCFullYear(),
+        m: dateObj.getUTCMonth() + 1,
+        d: dateObj.getUTCDate()
+      };
+    }
+    function addDaysUTC(dateObj, days) {
+      const ms = dateObj.getTime() + days * 86400000;
+      return new Date(ms);
+    }
+
+    // Gregorian -> N.E.
+    function gregorianToNE(gDate /* Date in UTC */) {
+      const { y, m, d } = ymdUTC(gDate);
+
+      // Determine the Gregorian month-start at day 20 that contains this date
+      let monthStart;
+      if (d >= 20) {
+        monthStart = toDateUTC(y, m, 20);
+      } else {
+        if (m === 1) monthStart = toDateUTC(y - 1, 12, 20);
+        else monthStart = toDateUTC(y, m - 1, 20);
+      }
+
+      const diffDays = Math.floor((gDate - monthStart) / 86400000);
+      const neDay = diffDays + 1;
+
+      const ms = ymdUTC(monthStart);
+      const neMonth = gregMonthToNeMonth(ms.m);
+
+      // N.E. year boundary is Sept 20
+      let neYear;
+      if (ms.m > 9 || (ms.m === 9 && ms.d >= 20)) { // monthStart on/after Sep 20
+        neYear = ms.y - 1911;
+      } else {
+        neYear = (ms.y - 1) - 1911;
+      }
+
+      return { neYear, neMonth, neDay, monthStart };
+    }
+
+    // ===== Simple calendar UI =====
+    const gregInput = document.getElementById("gregDate");
+    const calGrid = document.getElementById("calGrid");
+    const calTitle = document.getElementById("calTitle");
+    const neOutput = document.getElementById("neOutput");
+    const neExplain = document.getElementById("neExplain");
+
+    function formatMonthTitle(y, m) {
+      const dt = toDateUTC(y, m, 1);
+      return dt.toLocaleString(undefined, { month: "long", year: "numeric", timeZone: "UTC" });
+    }
+
+    function renderCalendar(selectedDateUTC) {
+      const { y, m, d } = ymdUTC(selectedDateUTC);
+
+      calTitle.textContent = formatMonthTitle(y, m);
+
+      // First day of month
+      const first = toDateUTC(y, m, 1);
+      const firstDow = first.getUTCDay(); // 0=Sun
+
+      // Days in month
+      const nextMonth = (m === 12) ? toDateUTC(y + 1, 1, 1) : toDateUTC(y, m + 1, 1);
+      const daysInMonth = Math.round((nextMonth - first) / 86400000);
+
+      // Previous month days to show
+      const prevMonthLast = addDaysUTC(first, -1);
+      const prevDaysInMonth = ymdUTC(prevMonthLast).d;
+
+      calGrid.innerHTML = "";
+
+      // 6 rows * 7 days = 42 cells
+      for (let i = 0; i < 42; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+
+        const dayNum = i - firstDow + 1;
+
+        let cellDate;
+        if (dayNum < 1) {
+          // prev month
+          const day = prevDaysInMonth + dayNum;
+          const pm = (m === 1) ? 12 : (m - 1);
+          const py = (m === 1) ? (y - 1) : y;
+          cell.textContent = day;
+          cell.classList.add("muted");
+          cellDate = toDateUTC(py, pm, day);
+        } else if (dayNum > daysInMonth) {
+          // next month
+          const day = dayNum - daysInMonth;
+          const nm = (m === 12) ? 1 : (m + 1);
+          const ny = (m === 12) ? (y + 1) : y;
+          cell.textContent = day;
+          cell.classList.add("muted");
+          cellDate = toDateUTC(ny, nm, day);
+        } else {
+          // current month
+          cell.textContent = dayNum;
+          cellDate = toDateUTC(y, m, dayNum);
+          if (dayNum === d) cell.classList.add("selected");
+        }
+
+        // Click a day to set date
+        cell.addEventListener("click", () => {
+          const { y, m, d } = ymdUTC(cellDate);
+          gregInput.value = `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+          updateFromInput();
+        });
+
+        calGrid.appendChild(cell);
+      }
+    }
+
+    function updateFromInput() {
+      if (!gregInput.value) return;
+
+      const [yy, mm, dd] = gregInput.value.split("-").map(Number);
+      const g = toDateUTC(yy, mm, dd);
+
+      // Convert
+      const { neYear, neMonth, neDay, monthStart } = gregorianToNE(g);
+      neOutput.textContent = `N.E. ${neYear}/${neMonth}/${neDay}`;
+
+      const ms = ymdUTC(monthStart);
+      neExplain.textContent =
+        `N.E. month started on ${ms.y}-${String(ms.m).padStart(2,"0")}-${String(ms.d).padStart(2,"0")} (Gregorian).`;
+
+      // Calendar month follows selected Gregorian date
+      renderCalendar(g);
+    }
+
+    // Initialize with today
+    (function init() {
+      const now = new Date();
+      const todayUTC = toDateUTC(now.getFullYear(), now.getMonth() + 1, now.getDate());
+      const { y, m, d } = ymdUTC(todayUTC);
+      gregInput.value = `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      updateFromInput();
+    })();
+
+    gregInput.addEventListener("change", updateFromInput);
+  </script>
+</body>
+</html>
