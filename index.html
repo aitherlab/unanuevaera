@@ -4,96 +4,386 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Fecha Nueva Era</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
-    :root { --border:#e6e6e6; --muted:#666; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#fff; color:#111; }
-    .wrap { max-width: 920px; margin: 0 auto; padding: 18px; }
+    :root { 
+      --midnight: #1a1a2e;
+      --deep-blue: #16213e;
+      --accent-gold: #d4af37;
+      --soft-gold: #f4e4c1;
+      --text-light: #e8e8e8;
+      --border-subtle: rgba(212, 175, 55, 0.15);
+      --shadow-warm: rgba(212, 175, 55, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      font-family: 'Crimson Text', Georgia, serif;
+      background: linear-gradient(135deg, var(--midnight) 0%, var(--deep-blue) 100%);
+      color: var(--text-light);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .wrap { 
+      max-width: 1100px; 
+      margin: 0 auto; 
+      padding: 40px 24px; 
+      position: relative;
+      z-index: 1;
+    }
 
-    .hero{
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  margin-bottom: 16px;
-  background: #fff;
-}
+    .hero {
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      margin-bottom: 48px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      box-shadow: 0 8px 32px var(--shadow-warm);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hero:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 48px var(--shadow-warm);
+    }
 
-.hero-inner{
-  padding: 18px 18px 0;
-  background: #fff;
-  display: flex;
-  justify-content: center;
-}
+    .hero-inner {
+      padding: 24px 24px 0;
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
+      display: flex;
+      justify-content: center;
+    }
 
-.hero img{
-  width: 100%;
-  height: auto;
-  max-height: 340px;      /* ajusta 280–420 si quieres */
-  object-fit: contain;   /* CLAVE: no recorta la imagen */
-  object-position: center;
-  display: block;
-}
+    .hero img {
+      width: 100%;
+      height: auto;
+      max-height: 380px;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      filter: brightness(1.05) contrast(1.05);
+    }
+    
+    .cap {
+      padding: 16px 24px;
+      text-align: center;
+      font-size: 15px;
+      color: var(--soft-gold);
+      letter-spacing: 0.5px;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(0, 0, 0, 0.2);
+    }
 
+    h1 { 
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 52px; 
+      font-weight: 700;
+      margin: 0 0 24px;
+      color: var(--accent-gold);
+      letter-spacing: 1px;
+      text-align: center;
+      text-shadow: 0 2px 20px rgba(212, 175, 55, 0.3);
+      line-height: 1.2;
+    }
+    
+    .intro {
+      max-width: 880px;
+      margin: 0 auto 48px;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.8;
+      color: var(--soft-gold);
+      font-weight: 400;
+    }
+    
+    .intro b {
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+    
+    .manifesto {
+      max-width: 820px;
+      margin: 0 auto 56px;
+      padding: 32px 40px;
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      font-size: 17px;
+      line-height: 1.9;
+      text-align: justify;
+      font-style: italic;
+      color: var(--text-light);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    
+    .manifesto::before {
+      content: '"';
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      font-size: 72px;
+      color: var(--accent-gold);
+      opacity: 0.2;
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
 
-    h1 { font-size: 22px; margin: 10px 0 4px; }
-    p { margin: 0 0 14px; color: var(--muted); }
-
-    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-    @media (min-width: 860px) { .grid { grid-template-columns: 360px 1fr; } }
+    .grid { 
+      display: grid; 
+      grid-template-columns: 1fr; 
+      gap: 24px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @media (min-width: 920px) { 
+      .grid { 
+        grid-template-columns: 400px 1fr; 
+      } 
+    }
 
     .card {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      background: #fff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 28px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
     }
-    label { display:block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    
+    .card:hover {
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+    
+    label { 
+      display: block; 
+      font-size: 14px; 
+      color: var(--soft-gold);
+      margin-bottom: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-family: 'Cormorant Garamond', serif;
+    }
+    
     input[type="date"] {
       width: 100%;
       box-sizing: border-box;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      padding: 14px 16px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
       font-size: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-light);
+      font-family: 'Crimson Text', serif;
+      transition: all 0.3s ease;
+    }
+    
+    input[type="date"]:hover {
+      border-color: var(--accent-gold);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    input[type="date"]:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1) brightness(0.8) sepia(1) saturate(5) hue-rotate(5deg);
+      cursor: pointer;
     }
 
     .result {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 12px;
-      background: #f7f7f7;
-      border: 1px solid var(--border);
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(212, 175, 55, 0.05) 100%);
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
     }
-    .result .big { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-    .result .small { color: var(--muted); font-size: 13px; }
-
-    .cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
-    .cal-head h2 { font-size: 16px; margin:0; }
-    .legend { color: var(--muted); font-size: 12px; }
-
-    .dow { display:grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 6px; }
-    .dow div { text-align:center; font-size:12px; color: var(--muted); padding: 4px 0; }
-
-    .cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-    .cell {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      height: 44px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    
+    .result:hover {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.08) 100%);
+    }
+    
+    .result .big { 
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; 
+      font-weight: 700; 
+      margin-bottom: 8px;
+      color: var(--accent-gold);
+      letter-spacing: 0.5px;
+    }
+    
+    .result .small { 
+      color: var(--soft-gold);
       font-size: 14px;
-      background:#fff;
-      user-select:none;
+      line-height: 1.6;
     }
-    .cell.muted { color: #aaa; background:#fcfcfc; }
+
+    .cal-head { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    .cal-head h2 { 
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; 
+      margin: 0;
+      color: var(--accent-gold);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    
+    .legend { 
+      color: var(--soft-gold);
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .dow { 
+      display: grid; 
+      grid-template-columns: repeat(7, 1fr); 
+      gap: 8px; 
+      margin-bottom: 8px;
+    }
+    
+    .dow div { 
+      text-align: center; 
+      font-size: 13px; 
+      color: var(--accent-gold);
+      padding: 8px 0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .cal-grid { 
+      display: grid; 
+      grid-template-columns: repeat(7, 1fr); 
+      gap: 8px;
+    }
+    
+    .cell {
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      user-select: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    
+    .cell:hover {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+    
+    .cell.muted { 
+      color: rgba(232, 232, 232, 0.3);
+      background: rgba(255, 255, 255, 0.01);
+    }
+    
+    .cell.muted:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
     .cell.selected {
-      outline: 2px solid #111;
+      outline: 2px solid var(--accent-gold);
       outline-offset: -2px;
       font-weight: 700;
-      background:#f1f1f1;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.15) 100%);
+      color: var(--accent-gold);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+    
+    .cell.selected:hover {
+      transform: translateY(0);
     }
 
-    .footer { margin-top: 12px; color: var(--muted); font-size: 12px; }
-    .pill { display:inline-block; padding: 2px 8px; border:1px solid var(--border); border-radius: 999px; background:#fff; }
+    .footer { 
+      margin-top: 20px; 
+      color: var(--soft-gold);
+      font-size: 13px;
+      line-height: 1.7;
+      opacity: 0.9;
+    }
+    
+    .pill { 
+      display: inline-block; 
+      padding: 4px 12px; 
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px; 
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+    
+    @media (max-width: 920px) {
+      h1 {
+        font-size: 38px;
+      }
+      
+      .manifesto {
+        padding: 24px 28px;
+        font-size: 16px;
+      }
+      
+      .intro {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -101,15 +391,20 @@
     
     <!-- IMAGEN SUPERIOR -->
     <div class="hero">
-      <!-- Pon tu imagen en el mismo folder y nómbrala header.jpg (o cambia este nombre aquí) -->
-      <img src="header.png" alt="Tabla de la Nueva Era" />
+      <div class="hero-inner">
+        <img src="header.png" alt="Tabla de la Nueva Era" />
+      </div>
       <div class="cap">Calendario de la Nueva Era</div>
     </div>
 
     <h1>Fecha Nueva Era</h1>
-    <p>
-      Seleccione una fecha del <b>calendario gregoriano</b>.
-      El sistema mostrará la <span class="pill">fecha correspondiente en la Nueva Era</span>.
+    
+    <div class="manifesto">
+      Estamos entrando en una nueva era afirmada por la conciencia humana. Los seres humanos comprenden la energía eterna que habita en cada uno y que enlaza toda vida en una sola trama viva. Esa energía impulsa a la humanidad a sentirse una, a saberse familia sin distinción de razas, fronteras, cuerpos o nombres. El amor actúa como ley de equilibrio, la razón ordena el camino y la justicia sostiene el progreso común. En esta hora histórica, la humanidad se afirma unificada por la vida misma, avanzando hacia una convivencia fraterna donde cada ser aporta luz al destino colectivo.
+    </div>
+    
+    <p class="intro">
+      En el siguiente calendario, pueden seleccionar la fecha del <b>calendario gregoriano</b> y les mostrará la <span class="pill">fecha correspondiente en la Nueva Era</span>.
     </p>
 
     <div class="grid">
@@ -277,7 +572,7 @@
       const g = toDateUTC(yy, mm, dd);
 
       const { neYear, neMonth, neDay, monthStart } = gregorianToNE(g);
-      neOutput.textContent = `N.E. ${neYear}/${neMonth}/${neDay}`;
+      neOutput.textContent = `Fecha Nueva Era: día ${neDay} del mes ${neMonth} del año ${neYear}`;
 
       const ms = ymdUTC(monthStart);
       neExplain.textContent =
