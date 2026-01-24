@@ -24,6 +24,35 @@
       box-sizing: border-box;
     }
     
+    .admin-footer {
+    margin-top: 60px;
+    padding: 24px;
+    text-align: center;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--soft-gold);
+    font-size: 14px;
+    line-height: 1.8;
+    }
+
+    .admin-footer p {
+    margin: 6px 0;
+    }
+
+    .admin-footer strong {
+    color: var(--accent-gold);
+    font-weight: 600;
+    }
+
+    .admin-footer a {
+    color: var(--accent-gold);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    }
+
+    .admin-footer a:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+    }
     body { 
       font-family: 'Crimson Text', Georgia, serif;
       background: linear-gradient(135deg, var(--midnight) 0%, var(--deep-blue) 100%);
@@ -387,6 +416,9 @@
       }
     }
   </style>
+Here's the new body with the admin footer added:
+
+```html
 </head>
 <body>
   <div class="wrap">
@@ -440,6 +472,12 @@
 
         <div class="cal-grid" id="calGrid"></div>
       </div>
+    </div>
+
+    <div class="admin-footer">
+      <p><strong>Admin de la web:</strong> Danny Javier Mota</p>
+      <p>Cátedra Regional Juan Pablo Duarte - Santo Domingo, República Dominicana</p>
+      <p>Email: <a href="mailto:djavier.mota@gmail.com">djavier.mota@gmail.com</a> | WhatsApp: <a href="https://wa.me/18495077258">849-507-7258</a></p>
     </div>
   </div>
 
