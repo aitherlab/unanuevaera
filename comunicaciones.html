@@ -93,7 +93,7 @@
       color: var(--accent-gold);
       font-family: "Cormorant Garamond", Georgia, serif;
       font-size: clamp(38px, 8vw, 72px);
-      line-height: 0.98;
+      line-height: 1.1;
       letter-spacing: 0.01em;
     }
 
@@ -143,16 +143,23 @@
       min-height: 46px;
       padding: 10px 12px;
       color: var(--text-light);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(212, 175, 55, 0.35);
       border-radius: 8px;
       font: 17px "Crimson Text", Georgia, serif;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:hover,
+    select:hover {
+      border-color: rgba(212, 175, 55, 0.6);
     }
 
     input:focus,
     select:focus {
-      outline: 2px solid rgba(212, 175, 55, 0.42);
-      outline-offset: 2px;
+      outline: none;
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.25);
     }
 
     select option {
@@ -197,23 +204,57 @@
       background: var(--panel);
       box-shadow: 0 8px 24px var(--shadow);
       overflow: hidden;
+      transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .communication[open] {
       background: var(--panel-strong);
     }
 
+    .communication:hover {
+      border-color: rgba(212, 175, 55, 0.35);
+      background: var(--panel-strong);
+    }
+
+    .communication:focus-within {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    }
+
     summary {
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
-      padding: 16px;
+      padding: 16px 48px 16px 16px;
       cursor: pointer;
       list-style: none;
+      position: relative;
     }
 
     summary::-webkit-details-marker {
       display: none;
+    }
+
+    summary::after {
+      content: "";
+      position: absolute;
+      top: 24px;
+      right: 20px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--accent-gold);
+      border-bottom: 2px solid var(--accent-gold);
+      transform: rotate(-45deg);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      pointer-events: none;
+    }
+
+    details[open] summary::after {
+      transform: rotate(45deg);
+    }
+
+    summary:focus-visible {
+      outline: none;
     }
 
     .summary-top {
@@ -248,6 +289,7 @@
     }
 
     .entry-title {
+      margin: 0;
       color: var(--text-light);
       font-family: "Cormorant Garamond", Georgia, serif;
       font-size: 24px;
@@ -272,6 +314,7 @@
       color: var(--text-light);
       font-size: 18px;
       line-height: 1.75;
+      max-width: 720px;
       white-space: pre-line;
     }
 
@@ -384,6 +427,7 @@
     const statsEl = document.getElementById("stats");
     const emptyState = document.getElementById("emptyState");
     const indexSource = document.getElementById("indexSource");
+    const toolbar = document.querySelector(".toolbar");
     let communications = [];
 
     function formatDate(item) {
@@ -439,8 +483,7 @@
       const selectedYear = yearSelect.value;
       const filtered = communications
         .filter((item) => !selectedYear || String(item.indexYear) === selectedYear)
-        .filter((item) => !query || searchableText(item).includes(query))
-        .sort((a, b) => (b.indexYear - a.indexYear) || sortEntries(a, b));
+        .filter((item) => !query || searchableText(item).includes(query));
 
       listEl.innerHTML = "";
       emptyState.style.display = filtered.length ? "none" : "block";
@@ -499,7 +542,7 @@
 
       const main = document.createElement("div");
       main.className = "summary-main";
-      const title = document.createElement("div");
+      const title = document.createElement("h3");
       title.className = "entry-title";
       title.textContent = item.title || item.sourceAnchor || "Comunicación";
       const meta = document.createElement("div");
@@ -533,12 +576,12 @@
       anchorLink.href = item.sourceUrl;
       anchorLink.target = "_blank";
       anchorLink.rel = "noopener";
-      anchorLink.textContent = "ancla original";
+      anchorLink.textContent = "Ver sección original";
       const issueLink = document.createElement("a");
       issueLink.href = item.sourceIssueUrl;
       issueLink.target = "_blank";
       issueLink.rel = "noopener";
-      issueLink.textContent = "página del número";
+      issueLink.textContent = "Ver página completa";
       links.append(sourceLabel, anchorLink, issueLink);
       content.appendChild(links);
 
@@ -558,6 +601,7 @@
         render();
       })
       .catch((error) => {
+        toolbar.hidden = true;
         statsEl.textContent = "No se pudieron cargar las comunicaciones.";
         emptyState.textContent = error.message;
         emptyState.style.display = "block";
