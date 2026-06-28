@@ -400,6 +400,27 @@
       color: var(--accent-gold);
       font-weight: 600;
     }
+
+    .archive-link {
+      display: block;
+      width: fit-content;
+      margin: -24px auto 44px;
+      padding: 12px 18px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      background: rgba(212, 175, 55, 0.08);
+      color: var(--accent-gold);
+      font-size: 17px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .archive-link:hover {
+      border-color: rgba(212, 175, 55, 0.38);
+      background: rgba(212, 175, 55, 0.13);
+      text-decoration: none;
+    }
     
     @media (max-width: 920px) {
       h1 {
@@ -437,6 +458,8 @@
     <p class="intro">
       En el siguiente calendario, pueden seleccionar la fecha del <b>calendario gregoriano</b> y les mostrará la <span class="pill">fecha correspondiente en la Nueva Era</span>.
     </p>
+
+    <a class="archive-link" href="comunicaciones.html">Comunicaciones de Joaquín Trincado</a>
 
     <div class="grid">
       <!-- IZQUIERDA: ENTRADA + RESULTADO -->
