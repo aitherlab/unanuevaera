@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Comunicaciones de Joaquín Trincado | Una nueva era</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --midnight: #1a1a2e;
+      --deep-blue: #16213e;
+      --panel: rgba(255, 255, 255, 0.04);
+      --panel-strong: rgba(255, 255, 255, 0.07);
+      --accent-gold: #d4af37;
+      --soft-gold: #f4e4c1;
+      --text-light: #f1f1f1;
+      --muted: rgba(244, 228, 193, 0.72);
+      --border-subtle: rgba(212, 175, 55, 0.16);
+      --shadow: rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-light);
+      background: linear-gradient(135deg, var(--midnight) 0%, var(--deep-blue) 100%);
+      font-family: "Crimson Text", Georgia, serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(212, 175, 55, 0.05), transparent 34%),
+        radial-gradient(circle at 85% 5%, rgba(244, 228, 193, 0.04), transparent 28%);
+      pointer-events: none;
+    }
+
+    a {
+      color: var(--accent-gold);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .wrap {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 24px 18px 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .site-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 10px 0 26px;
+      color: var(--soft-gold);
+      font-size: 16px;
+    }
+
+    .brand {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .hero {
+      padding: 26px 0 24px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--accent-gold);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(38px, 8vw, 72px);
+      line-height: 0.98;
+      letter-spacing: 0.01em;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 20px 0 0;
+      color: var(--soft-gold);
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .source-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .toolbar {
+      display: grid;
+      gap: 12px;
+      margin: 28px 0;
+      padding: 16px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 28px var(--shadow);
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    label {
+      color: var(--soft-gold);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      color: var(--text-light);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      font: 17px "Crimson Text", Georgia, serif;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid rgba(212, 175, 55, 0.42);
+      outline-offset: 2px;
+    }
+
+    select option {
+      color: #1a1a2e;
+      background: #f7f0df;
+    }
+
+    .stats {
+      color: var(--muted);
+      font-size: 16px;
+      align-self: end;
+    }
+
+    .year-group {
+      margin-top: 34px;
+    }
+
+    .year-heading {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      margin: 0 0 14px;
+      color: var(--accent-gold);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    .year-count {
+      color: var(--muted);
+      font: 16px "Crimson Text", Georgia, serif;
+    }
+
+    .cards {
+      display: grid;
+      gap: 12px;
+    }
+
+    .communication {
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 24px var(--shadow);
+      overflow: hidden;
+    }
+
+    .communication[open] {
+      background: var(--panel-strong);
+    }
+
+    summary {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 16px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-top {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .date {
+      color: var(--accent-gold);
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 2px 9px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      color: var(--soft-gold);
+      background: rgba(212, 175, 55, 0.08);
+      font-size: 14px;
+    }
+
+    .badge.review {
+      color: #ffe3a3;
+      border-color: rgba(255, 204, 102, 0.38);
+      background: rgba(255, 204, 102, 0.09);
+    }
+
+    .entry-title {
+      color: var(--text-light);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .content {
+      padding: 0 16px 18px;
+    }
+
+    .text {
+      margin: 0;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-light);
+      font-size: 18px;
+      line-height: 1.75;
+      white-space: pre-line;
+    }
+
+    .review-note {
+      margin: 0 0 14px;
+      color: #ffe3a3;
+      font-size: 16px;
+    }
+
+    .source-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .empty {
+      display: none;
+      padding: 24px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      color: var(--soft-gold);
+      background: var(--panel);
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 42px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    @media (min-width: 760px) {
+      .wrap {
+        padding: 34px 28px 60px;
+      }
+
+      .toolbar {
+        grid-template-columns: minmax(260px, 1fr) 180px auto;
+        align-items: end;
+      }
+
+      summary {
+        grid-template-columns: minmax(160px, 220px) 1fr;
+        align-items: start;
+      }
+
+      .summary-main {
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a class="brand" href="index.html">Una nueva era</a>
+      <div class="nav-links">
+        <a href="index.html">Calendario</a>
+        <a href="comunicaciones.html" aria-current="page">Comunicaciones</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <h1>Comunicaciones de Joaquín Trincado</h1>
+      <p class="lead">
+        Archivo organizado por año y fecha a partir del índice histórico de la
+        Cátedra Regional Mexicana, El Heraldo del Espiritismo.
+      </p>
+      <p class="source-note">
+        Fuente principal:
+        <a id="indexSource" href="https://www.geocities.ws/eme_dela_cu/indexjt.htm">índice original en Geocities</a>.
+        Cada entrada conserva enlaces a su página y ancla de origen.
+      </p>
+    </section>
+
+    <section class="toolbar" aria-label="Filtros">
+      <div class="field">
+        <label for="searchInput">Buscar</label>
+        <input id="searchInput" type="search" placeholder="Fecha, médium, título o texto" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="yearSelect">Año</label>
+        <select id="yearSelect">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="stats" id="stats" aria-live="polite">Cargando comunicaciones...</div>
+    </section>
+
+    <div class="empty" id="emptyState">No se encontraron comunicaciones con esos filtros.</div>
+    <section id="communications" aria-label="Lista de comunicaciones"></section>
+
+    <footer class="footer">
+      Contenido extraído de páginas archivadas en Geocities con codificación windows-1252.
+      Las entradas marcadas para revisión conservan el enlace fuente para verificación manual.
+    </footer>
+  </main>
+
+  <script>
+    const dataUrl = "data/comunicaciones-joaquin-trincado.json";
+    const listEl = document.getElementById("communications");
+    const searchInput = document.getElementById("searchInput");
+    const yearSelect = document.getElementById("yearSelect");
+    const statsEl = document.getElementById("stats");
+    const emptyState = document.getElementById("emptyState");
+    const indexSource = document.getElementById("indexSource");
+    let communications = [];
+
+    function formatDate(item) {
+      if (!item.date) return item.dateLabel || "s/f";
+      const [year, month, day] = item.date.split("-");
+      return `${day}/${month}/${year}`;
+    }
+
+    function searchableText(item) {
+      return [
+        item.date,
+        item.dateLabel,
+        item.year,
+        item.indexYear,
+        item.title,
+        item.medium,
+        item.sourceAnchor,
+        item.text
+      ].filter(Boolean).join(" ").toLowerCase();
+    }
+
+    function populateYears(items) {
+      const years = [...new Set(items.map((item) => item.indexYear))].sort((a, b) => b - a);
+      for (const year of years) {
+        const option = document.createElement("option");
+        option.value = String(year);
+        option.textContent = year;
+        yearSelect.appendChild(option);
+      }
+    }
+
+    function groupByYear(items) {
+      return items.reduce((groups, item) => {
+        const year = item.indexYear || item.year || "s/f";
+        if (!groups.has(year)) groups.set(year, []);
+        groups.get(year).push(item);
+        return groups;
+      }, new Map());
+    }
+
+    function sortEntries(a, b) {
+      const aKey = a.date || `${a.indexYear}-99-99-${a.id}`;
+      const bKey = b.date || `${b.indexYear}-99-99-${b.id}`;
+      return aKey.localeCompare(bKey) || a.id.localeCompare(b.id);
+    }
+
+    function entryLabel(count) {
+      return count === 1 ? "1 entrada" : `${count} entradas`;
+    }
+
+    function render() {
+      const query = searchInput.value.trim().toLowerCase();
+      const selectedYear = yearSelect.value;
+      const filtered = communications
+        .filter((item) => !selectedYear || String(item.indexYear) === selectedYear)
+        .filter((item) => !query || searchableText(item).includes(query))
+        .sort((a, b) => (b.indexYear - a.indexYear) || sortEntries(a, b));
+
+      listEl.innerHTML = "";
+      emptyState.style.display = filtered.length ? "none" : "block";
+      statsEl.textContent = `${filtered.length} de ${communications.length} comunicaciones`;
+
+      const groups = groupByYear(filtered);
+      const years = [...groups.keys()].sort((a, b) => Number(b) - Number(a));
+      for (const year of years) {
+        const items = groups.get(year).sort(sortEntries);
+        const section = document.createElement("section");
+        section.className = "year-group";
+
+        const heading = document.createElement("h2");
+        heading.className = "year-heading";
+        const yearText = document.createElement("span");
+        yearText.textContent = year;
+        const yearCount = document.createElement("span");
+        yearCount.className = "year-count";
+        yearCount.textContent = entryLabel(items.length);
+        heading.append(yearText, yearCount);
+        section.appendChild(heading);
+
+        const cards = document.createElement("div");
+        cards.className = "cards";
+        for (const item of items) {
+          cards.appendChild(renderCard(item));
+        }
+        section.appendChild(cards);
+        listEl.appendChild(section);
+      }
+    }
+
+    function renderCard(item) {
+      const details = document.createElement("details");
+      details.className = "communication";
+
+      const summary = document.createElement("summary");
+      const top = document.createElement("div");
+      top.className = "summary-top";
+      const date = document.createElement("span");
+      date.className = "date";
+      date.textContent = formatDate(item);
+      top.appendChild(date);
+      if (item.medium) {
+        const medium = document.createElement("span");
+        medium.className = "badge";
+        medium.textContent = item.medium;
+        top.appendChild(medium);
+      }
+      if (item.needsReview) {
+        const reviewBadge = document.createElement("span");
+        reviewBadge.className = "badge review";
+        reviewBadge.textContent = "Revisar fuente";
+        top.appendChild(reviewBadge);
+      }
+
+      const main = document.createElement("div");
+      main.className = "summary-main";
+      const title = document.createElement("div");
+      title.className = "entry-title";
+      title.textContent = item.title || item.sourceAnchor || "Comunicación";
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = `Año del índice: ${item.indexYear}`;
+      main.append(title, meta);
+      summary.append(top, main);
+
+      const content = document.createElement("div");
+      content.className = "content";
+
+      if (item.needsReview) {
+        const review = document.createElement("p");
+        review.className = "review-note";
+        review.textContent = item.reviewNote
+          ? `Entrada marcada para revisión: ${item.reviewNote}.`
+          : "Entrada marcada para revisión: la fecha completa no aparece en la fuente.";
+        content.appendChild(review);
+      }
+
+      const text = document.createElement("p");
+      text.className = "text";
+      text.textContent = item.text || "Texto no disponible en la página fuente enlazada.";
+      content.appendChild(text);
+
+      const links = document.createElement("div");
+      links.className = "source-links";
+      const sourceLabel = document.createElement("span");
+      sourceLabel.textContent = "Fuente:";
+      const anchorLink = document.createElement("a");
+      anchorLink.href = item.sourceUrl;
+      anchorLink.target = "_blank";
+      anchorLink.rel = "noopener";
+      anchorLink.textContent = "ancla original";
+      const issueLink = document.createElement("a");
+      issueLink.href = item.sourceIssueUrl;
+      issueLink.target = "_blank";
+      issueLink.rel = "noopener";
+      issueLink.textContent = "página del número";
+      links.append(sourceLabel, anchorLink, issueLink);
+      content.appendChild(links);
+
+      details.append(summary, content);
+      return details;
+    }
+
+    fetch(dataUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error(`No se pudo cargar ${dataUrl}`);
+        return response.json();
+      })
+      .then((data) => {
+        communications = data.communications || [];
+        if (data.sourceIndexUrl) indexSource.href = data.sourceIndexUrl;
+        populateYears(communications);
+        render();
+      })
+      .catch((error) => {
+        statsEl.textContent = "No se pudieron cargar las comunicaciones.";
+        emptyState.textContent = error.message;
+        emptyState.style.display = "block";
+      });
+
+    searchInput.addEventListener("input", render);
+    yearSelect.addEventListener("change", render);
+  </script>
+</body>
+</html>
